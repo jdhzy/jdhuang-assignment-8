@@ -48,7 +48,8 @@ def do_experiments(start, end, step_num):
 
     n_samples = 8
     n_cols = 2  # Fixed number of columns
-    n_rows = (n_samples + n_cols - 1) // n_cols  # Calculate rows needed
+    # n_rows = (n_samples + n_cols - 1) // n_cols  # Calculate rows needed
+    n_rows = (len(shift_distances) + n_cols - 1) // n_cols
     plt.figure(figsize=(20, n_rows * 10))  # Adjust figure height based on rows
 
     # Run experiments for each shift distance
@@ -92,6 +93,13 @@ def do_experiments(start, end, step_num):
 
         slope_list.append(slope)
         intercept_list.append(intercept)
+
+        #Plot the decision boundary
+        if slope is not None:
+            x_vals = np.linspace(X[:, 0].min() - 1, X[:, 0].max() + 1, 200)
+            y_vals = slope * x_vals + intercept
+            plt.plot(x_vals, y_vals, 'k--', label='Decision Boundary')
+
 
         # Plot fading red and blue contours for confidence levels
         contour_levels = [0.7, 0.8, 0.9]
@@ -150,6 +158,26 @@ def do_experiments(start, end, step_num):
     plt.xlabel("Shift Distance")
     plt.ylabel("Beta2")
     plt.legend()
+
+    # Plot beta1 / beta2 (Slope)
+    plt.subplot(3, 3, 4)
+    slope_values = [-b1 / b2 if b2 != 0 else np.nan for b1, b2 in zip(beta1_list, beta2_list)]
+    plt.plot(shift_distances, slope_values, marker='o', color='red', label='Slope (Beta1 / Beta2)')
+    plt.title("Shift Distance vs Beta1 / Beta2 (Slope)")
+    plt.xlabel("Shift Distance")
+    plt.ylabel("Beta1 / Beta2")
+    plt.ylim(-2, 0)
+    plt.legend()
+
+    # Plot beta0 / beta2 (Intercept ratio)
+    plt.subplot(3, 3, 5)
+    intercept_ratios = [-b0 / b2 if b2 != 0 else np.nan for b0, b2 in zip(beta0_list, beta2_list)]
+    plt.plot(shift_distances, intercept_ratios, marker='o', color='purple', label='Intercept Ratio (Beta0 / Beta2)')
+    plt.title("Shift Distance vs Beta0 / Beta2 (Intercept Ratio)")
+    plt.xlabel("Shift Distance")
+    plt.ylabel("Beta0 / Beta2")
+    plt.legend()
+
 
     # Plot logistic loss
     plt.subplot(3, 3, 6)
