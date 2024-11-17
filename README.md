@@ -1,7 +1,7 @@
 # Assignment 8: Logistic Regression
 
 ---
-# Youtube link: 
+# Youtube link: https://youtu.be/hopoxz3EBdY
 
 **Goals**:
 
